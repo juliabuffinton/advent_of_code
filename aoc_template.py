@@ -2,8 +2,9 @@
 import math
 import sys
 import numpy as np
-from collections import Counter
+from collections import Counter, defaultdict
 from itertools import combinations, permutations
+import time
 
 # Parse Input
 def parse_input(raw_input):
