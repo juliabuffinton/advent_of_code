@@ -1,10 +1,5 @@
 # Imports
-import math
 import sys
-import numpy as np
-from collections import Counter, defaultdict
-from itertools import combinations, permutations
-import time
 import os
 
 # Parse Input
@@ -89,13 +84,16 @@ def main(raw_input):
 
 if __name__ == "__main__":
 
-    # Get the location of this file, assumption that input stored in same dir
+    # Get the location of this file, assumption that input is stored in same dir
     loc = sys.argv[0].rsplit("/",1)[0]
 
     # TODO: if no flag, treat as not test
     test_flag = int(sys.argv[1]) # 1 = test
 
     if test_flag:
-        main(os.path.join(loc,"input_test.txt"))
+        input_file = "input_test.txt"
     else:
-        main(os.path.join(loc,"input.txt"))
+        input_file = "input.txt"
+        input_loc = os.path.join(loc,input_file)
+        
+    main(input_loc)
