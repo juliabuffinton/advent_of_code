@@ -85,15 +85,16 @@ def main(raw_input):
 if __name__ == "__main__":
 
     # Get the location of this file, assumption that input is stored in same dir
-    loc = sys.argv[0].rsplit("/",1)[0]
+    loc = os.path.dirname(os.path.abspath(__file__))
 
-    # TODO: if no flag, treat as not test
-    test_flag = int(sys.argv[1]) # 1 = test
+    # TODO: if no flag, treat as normal mode
+    test_flag = int(sys.argv[1]) # 1 = test; 0 = normal mode
 
     if test_flag:
         input_file = "input_test.txt"
     else:
         input_file = "input.txt"
-        input_loc = os.path.join(loc,input_file)
+        
+    input_loc = os.path.join(loc,input_file)
         
     main(input_loc)
