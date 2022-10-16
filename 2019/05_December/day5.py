@@ -1,7 +1,14 @@
 # Imports
-from http.client import IncompleteRead
 import sys
 import os
+import argparse
+
+# Is there a better way to import a module from a parent directory?
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+import intcoder
+
 
 # Parse Input
 def parse_input(raw_input):
@@ -151,10 +158,15 @@ if __name__ == "__main__":
     # Get the location of this file, assumption that input is stored in same dir
     loc = os.path.dirname(os.path.abspath(__file__))
 
-    # TODO: if no flag, treat as normal mode
-    test_flag = int(sys.argv[1]) # 1 = test; 0 = normal mode
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test', '-t', 
+                        action='store_true', 
+                        help="indicator that this script should be run with test data")
 
-    if test_flag:
+    args = parser.parse_args()
+
+    # Check if we got any arguments
+    if args.test:
         input_file = "input_test.txt"
     else:
         input_file = "input.txt"
