@@ -1,6 +1,13 @@
 # Imports
 import sys
 import os
+import argparse
+
+# Is there a better way to import a module from a parent directory?
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+import intcoder
 
 # Parse Input
 def parse_input(raw_input):
@@ -10,32 +17,7 @@ def parse_input(raw_input):
     
     return puzzle_input
 
-# Helper Functions
-def process_opcode(intcode_program):
-    
-    instr_pointer = 0
-
-    opcode = intcode_program[0]
-    
-    # opcode - either 1, 2, or 99
-    while opcode != 99:
-
-        arg1_loc = intcode_program[instr_pointer+1]
-        arg2_loc = intcode_program[instr_pointer+2]
-        output_loc = intcode_program[instr_pointer+3]
-        
-        if opcode == 1:
-            output = intcode_program[arg1_loc] + intcode_program[arg2_loc]
-        elif opcode == 2:
-            output = intcode_program[arg1_loc] * intcode_program[arg2_loc]
-
-        intcode_program[output_loc] = output
-        
-        instr_pointer += 4
-        opcode = intcode_program[instr_pointer]
-    
-    return intcode_program
-    
+# Helper Functions  
 def repl_vals_1_and_2(intcode_program, val1, val2):
     intcode_program[1] = val1
     intcode_program[2] = val2
@@ -48,8 +30,8 @@ def part1(puzzle_input):
     intcode_program = puzzle_input.copy()
     intcode_program = repl_vals_1_and_2(intcode_program, 12, 2)
     
-    intcode_program = process_opcode(intcode_program)
-    part1_answer = intcode_program[0]
+    intcode_program = intcoder.process_program(intcode_program)
+    part1_answer = intcode_program[1][0]
     return part1_answer
 
 # Part 2
@@ -64,8 +46,8 @@ def part2(puzzle_input):
             intcode_program = puzzle_input.copy()
             
             intcode_program = repl_vals_1_and_2(intcode_program, noun, verb)
-            intcode_program = process_opcode(intcode_program)
-            output = intcode_program[0]
+            intcode_program = intcoder.process_program(intcode_program)
+            output = intcode_program[1][0]
             
             if output == target_output:
                 part2_answer = 100 * noun + verb
@@ -81,20 +63,24 @@ def main(raw_input):
     part2_answer = part2(puzzle_input)
     print(f"Part 2: {part2_answer}")
 
-
 if __name__ == "__main__":
 
     # Get the location of this file, assumption that input is stored in same dir
-    loc = os.path.dirname(os.path.abspath(__file__))
+    # loc = os.path.dirname(os.path.abspath(__file__))
 
-    # TODO: if no flag, treat as normal mode
-    test_flag = int(sys.argv[1]) # 1 = test; 0 = normal mode
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--test', '-t', 
+                        action='store_true', 
+                        help="indicator that this script should be run with test data")
 
-    if test_flag:
+    args = parser.parse_args()
+
+    # Check if we got any arguments
+    if args.test:
         input_file = "input_test.txt"
     else:
         input_file = "input.txt"
         
-    input_loc = os.path.join(loc,input_file)
+    input_loc = os.path.join(current_dir,input_file)
         
     main(input_loc)
