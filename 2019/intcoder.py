@@ -38,7 +38,7 @@ def write(arg1):
     """opcode of 3"""
     return arg1
 
-def output(arg1):
+def output_value(arg1):
     """opcode of 4"""
     return arg1
 
@@ -47,7 +47,7 @@ def output(arg1):
 #######################
 
 def process_program(intcode_program, input_vals = []):
-    print(intcode_program)
+    # print(intcode_program)
     
     output = -1
     instr_pointer = 0
@@ -67,13 +67,13 @@ def process_program(intcode_program, input_vals = []):
         # Each argument has a mode specified by digits
         # TODO: Will there be more args?
         opcode = int(instr[-2:])
-        print(opcode)
+        # print(opcode)
         
         if opcode == 99:
             break
         
         args = intcode_program[instr_pointer+1 : instr_pointer+4]
-        print(args)
+        # print(args)
         modes = [int(x) for x in instr[:-2][::-1]] # reverse list so indexes align with args
 
         if opcode == 1:
@@ -88,6 +88,16 @@ def process_program(intcode_program, input_vals = []):
 
         elif opcode == 3:
             write_val == input_vals.pop()
+            # write_loc = 
+            instr_pointer += 2
+
+        elif opcode == 4:
+            output = output_value(get_arg_value(args[0], modes[0], intcode_program))
+            instr_pointer += 2
+            # if arg1_mode == Mode.IMMEDIATE:
+            #     output = arg1
+            # elif arg1_mode == Mode.POSITION:
+            #     output = intcode_program[arg1]            
             
         # here is for all our 3-param opcodes
         '''
@@ -143,19 +153,3 @@ def process_program(intcode_program, input_vals = []):
             intcode_program[write_loc] = write_val
            
     return output, intcode_program
-    
-# Part 1
-# def part1(puzzle_input, input):
-    
-#     intcode_program = puzzle_input.copy()
-    
-#     output, intcode_program = process_opcode(intcode_program, input)
-#     part1_answer = output
-#     return part1_answer
-
-def main():
-    print(process_program([1,9,10,3,2,3,11,0,99,30,40,50])[1])
-
-if __name__ == '__main__':
-    main()
-    
