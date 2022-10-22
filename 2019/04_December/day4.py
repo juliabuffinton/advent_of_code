@@ -65,14 +65,15 @@ def part2(puzzle_input):
             elif (diffs[-1] == 0) & (diffs[-2] != 0):
                 return True
             
-            for i,x in enumerate(diffs[1:-1]):
+            for i,x in enumerate(diffs):
                 # nesting these IFs so we don't check extra if not zero? 
-                # does this really make a difference?
-                if (diffs[i] == 0):
-                   if (diffs[i-1] > 0) & (diffs[i+1] > 0):
-                       # We only need to find this once to say it fits the pattern
-                       # so we can return as soon as we find one
-                       return True
+                # does this really make a difference? 
+                if (i != 0) & (i != len(diffs)-1):
+                    if (diffs[i] == 0):
+                        if (diffs[i-1] > 0) & (diffs[i+1] > 0):
+                        # We only need to find this once to say it fits the pattern
+                        # so we can return as soon as we find one
+                            return True
             return False
             
         # if at any point we're not monotonically increasing
