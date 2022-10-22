@@ -64,10 +64,7 @@ def main(raw_input):
     print(f"Part 2: {part2_answer}")
 
 if __name__ == "__main__":
-
-    # Get the location of this file, assumption that input is stored in same dir
-    # loc = os.path.dirname(os.path.abspath(__file__))
-
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('--test', '-t', 
                         action='store_true', 
