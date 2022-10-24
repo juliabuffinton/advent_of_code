@@ -30,12 +30,6 @@ def part1(puzzle_input):
 
         digits = [int(x) for x in str(num)]
         diffs = [y - x for x,y in zip(digits,digits[1:])]
-        
-        def check_adjacent(first_num, next_num):
-            if (first_num == 0) & (next_num != 0):
-                return True
-            else:
-                return False
                 
         # if at any point we're not monotonically increasing
         # we just move on to the next number
