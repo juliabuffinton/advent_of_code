@@ -42,24 +42,40 @@ def output_value(arg1):
     """opcode of 4"""
     return arg1
 
+def jump_if_true(arg1):
+    """opcode of 5"""
+    return arg1 != 0
+
+def jump_if_false(arg1):
+    """opcode of 6"""
+    return arg1 == 0
+
+def less_than(arg1, arg2):
+    """opcode of 7"""
+    return int(arg1 < arg2)
+
+def equals(arg1, arg2):
+    """opcode of 8"""
+    return int(arg1 == arg2)
+
 #######################
 # Program
 #######################
 
 def process_program(intcode_program, input_vals = []):
-    # print(intcode_program)
     
     output = -1
     instr_pointer = 0
     write_opcodes = [1, 2, 3, 7, 8]
     
-    three_param_opcodes = [1, 2, 7, 8]
-    two_param_opcodes = [5, 6]
-    one_param_opcodes = [3, 4]
+    # three_param_opcodes = [1, 2, 7, 8]
+    # two_param_opcodes = [5, 6]
+    # one_param_opcodes = [3, 4]
     
-    # opcode - either 1, 2, 3, or 99
-    # TODO: Do we need to check if we reach the end of the list?
     while (instr_pointer < len(intcode_program)):
+        if len(intcode_program) == instr_pointer + 1:
+            print("we're at the last element of the intcode program...")
+
 
         # instr may be 0 - 5 digits
         instr = str(intcode_program[instr_pointer]).zfill(5)
@@ -67,13 +83,12 @@ def process_program(intcode_program, input_vals = []):
         # Each argument has a mode specified by digits
         # TODO: Will there be more args?
         opcode = int(instr[-2:])
-        # print(opcode)
         
         if opcode == 99:
+            print("we hit a 99!!! abort!!")
             break
         
         args = intcode_program[instr_pointer+1 : instr_pointer+4]
-        # print(args)
         modes = [int(x) for x in instr[:-2][::-1]] # reverse list so indexes align with args
 
         if opcode == 1:
@@ -87,66 +102,44 @@ def process_program(intcode_program, input_vals = []):
             instr_pointer += 4
 
         elif opcode == 3:
-            write_val == input_vals.pop()
-            # write_loc = 
+            write_val = input_vals.pop()
+            write_loc = args[0]
             instr_pointer += 2
 
         elif opcode == 4:
             output = output_value(get_arg_value(args[0], modes[0], intcode_program))
             instr_pointer += 2
-            # if arg1_mode == Mode.IMMEDIATE:
-            #     output = arg1
-            # elif arg1_mode == Mode.POSITION:
-            #     output = intcode_program[arg1]            
-            
-        # here is for all our 3-param opcodes
-        '''
-        if opcode in three_param_opcodes:   
-            
-            # Comparison opcodes
-            if opcode in [7, 8]:
-                
-                if opcode == 7:
-                    write_val = int(arg1 < arg2)
-                    
-                if opcode == 8:
-                    write_val = int(arg1 == arg2)
-            
-            write_loc = arg3
-            instr_pointer += 4
-        
-                
-        # Here is for all of our 1-param opcodes
-        elif opcode in one_param_opcodes:
-            
-            if opcode == 3:
-                write_val = input
-                write_loc = arg1
-                
-            elif opcode == 4:
-                if arg1_mode == Mode.IMMEDIATE:
-                    output = arg1
-                elif arg1_mode == Mode.POSITION:
-                    output = intcode_program[arg1]
 
-            instr_pointer += 2
-            
-        # Here is for all our 2-param opcodes
-        elif opcode in two_param_opcodes:
-            
-            # Jump opcodes
-            if opcode == 5:
-                jump = arg1 != 0 
-        
-            # if first param is 0, jump
-            elif opcode == 6:
-                jump = arg1 == 0 
+        elif opcode == 5:
+            jump = jump_if_true(get_arg_value(args[0], modes[0], intcode_program))
             
             if jump:
-                instr_pointer = arg2
+                instr_pointer = get_arg_value(args[1], modes[1], intcode_program)
             else:
                 instr_pointer += 3 
-        '''
+
+        elif opcode == 6:
+            jump = jump_if_false(get_arg_value(args[0], modes[0], intcode_program))
+            
+            if jump:
+                instr_pointer = get_arg_value(args[1], modes[1], intcode_program)
+            else:
+                instr_pointer += 3 
+        
+        elif opcode == 7:
+            write_val = less_than(get_arg_value(args[0], modes[0], intcode_program), get_arg_value(args[1], modes[1], intcode_program))
+            write_loc = args[2]
+            instr_pointer += 4
+
+        
+        elif opcode == 8:
+            write_val = equals(get_arg_value(args[0], modes[0], intcode_program), get_arg_value(args[1], modes[1], intcode_program))
+            write_loc = args[2]
+            instr_pointer += 4
+
+        else:
+            print("Got an opcode we didn't recognize!!")
+            break
 
         # Only write for certain opcodes
         if opcode in write_opcodes:
