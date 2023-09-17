@@ -21,26 +21,29 @@ def parse_input(raw_input):
     
     # Handle first line
     curr_guard, curr_status, curr_time, curr_date = parse_line(puzzle_input[0], 0)
-    guards.append(curr_guard)
+    # guards.append(curr_guard)
     # awake.append(curr_time)
-    date.append(curr_date)
+    # date.append(curr_date)
     
     for line in puzzle_input[1:]:
-        prev_guard = curr_guard
+        # prev_guard = curr_guard
         curr_guard, curr_status, curr_time, curr_date = parse_line(line, curr_guard)
         
         if curr_status == "awake":
             
             # Assumption: Guards end their shift awake
-            if curr_time < awake[-1]:
-                asleep.append(59)
-            guards.append(curr_guard)
-            awake.append(curr_time)
-            date.append(curr_date)
+            if curr_time < asleep[-1]:
+                continue
+            # guards.append(curr_guard)
+            else:
+                awake.append(curr_time)
+            # date.append(curr_date)
 
         else:
             asleep.append(curr_time)
-    asleep.append(59)    
+            guards.append(curr_guard)
+            date.append(curr_date)
+    # asleep.append(59)    
     
     puzzle_input = pd.DataFrame({"guard":guards, "asleep":asleep, "awake":awake, "date": date})
     return puzzle_input
@@ -60,16 +63,18 @@ def parse_line(line, curr_guard):
     
     return curr_guard, status, time, date
         
-        
+def sleepiest_guard(df):
+    df["mins_asleep"] = df.awake - df.asleep
+
+    df = df.groupby("guard").agg({"mins_asleep":"sum"}).reset_index()
+    df[df.mins_asleep == df.mins_asleep.max()].guard
+    return ()
     
 # Part 1
 def part1(puzzle_input):
     df = puzzle_input
-    df["mins_awake"] = df.asleep - df.awake - 1
-    
-    print(df.groupby("guard").agg({"mins_awake":"sum", "date":"nunique"}))
-    
-    part1_answer = ""
+        
+    part1_answer = f"The sleepiest guard is {sleepiest_guard(df)}"
     return part1_answer
 
 # Part 2
